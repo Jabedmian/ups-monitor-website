@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPS Monitor - Mobile Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .server-config {
+            background: white;
+            margin: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .server-config h3 {
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .status-card {
+            background: white;
+            margin: 15px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .status-online {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-battery {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .metric {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-icon {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin: 5px 0;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .ups-list {
+            margin: 15px;
+        }
+
+        .ups-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .ups-item:active {
+            transform: scale(0.98);
+        }
+
+        .ups-item h3 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .ups-item p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .alert {
+            margin: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #2196F3;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .alert-critical {
+            border-left-color: #F44336;
+        }
+
+        .alert-warning {
+            border-left-color: #FF9800;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            text-align: center;
+            flex: 1;
+            padding: 10px;
+            text-decoration: none;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: #667eea;
+        }
+
+        .nav-item span {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 3px;
+        }
+
+        .nav-item small {
+            font-size: 0.8rem;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .success-msg {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .error-msg {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 99;
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ UPS Monitor</h1>
+        <p id="server-status">Not connected</p>
+    </div>
+
+    <!-- Setup Page -->
+    <div id="setup-page" class="page active">
+        <div class="server-config">
+            <h3>🔧 Server Configuration</h3>
+            <p style="margin-bottom: 15px; color: #666; font-size: 0.9rem;">
+                Enter your UPS Monitor server address to connect
+            </p>
+
+            <div class="input-group">
+                <label>Server Address</label>
+                <input type="text" id="server-url" placeholder="http://192.168.1.100:3000" value="http://localhost:3000">
+            </div>
+
+            <button class="btn btn-primary" onclick="connectToServer()">🔌 Connect</button>
+
+            <div id="connection-status"></div>
+
+            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">
+                    <strong>How to find your server:</strong>
+                </p>
+                <ol style="margin-left: 20px; font-size: 0.9rem; color: #666;">
+                    <li>On your PC, open Command Prompt</li>
+                    <li>Type: <code>ipconfig</code></li>
+                    <li>Find IPv4 Address (e.g., 192.168.1.100)</li>
+                    <li>Enter: http://YOUR-IP:3000</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboard-page" class="page">
+        <div class="status-card">
+            <span id="status-badge" class="status-badge status-online">LOADING...</span>
+            <p style="font-size: 0.9rem; color: #666;">Last updated: <span id="last-update">--</span></p>
+        </div>
+
+        <div class="status-card">
+            <h3 style="margin-bottom: 15px; color: #333;">Current Status</h3>
+            <div class="metrics-grid">
+                <div class="metric">
+                    <div class="metric-icon">🔋</div>
+                    <div class="metric-value" id="battery">--</div>
+                    <div class="metric-label">Battery</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-icon">⚡</div>
+                    <div class="metric-value" id="voltage">--</div>
+                    <div class="metric-label">Voltage</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-icon">📊</div>
+                    <div class="metric-value" id="load">--</div>
+                    <div class="metric-label">Load</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-icon">🌡️</div>
+                    <div class="metric-value" id="temp">--</div>
+                    <div class="metric-label">Temperature</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-card">
+            <h3 style="margin-bottom: 10px; color: #333;">UPS Information</h3>
+            <p><strong>Name:</strong> <span id="ups-name">--</span></p>
+            <p><strong>Location:</strong> <span id="ups-location">--</span></p>
+            <p><strong>Runtime:</strong> <span id="runtime">--</span> minutes</p>
+        </div>
+    </div>
+
+    <!-- Devices Page -->
+    <div id="devices-page" class="page">
+        <div class="ups-list" id="ups-list">
+            <div class="loading">Loading devices...</div>
+        </div>
+    </div>
+
+    <!-- Alerts Page -->
+    <div id="alerts-page" class="page">
+        <div id="alerts-container">
+            <div class="loading">Loading alerts...</div>
+        </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div id="settings-page" class="page">
+        <div class="server-config">
+            <h3>⚙️ Settings</h3>
+            
+            <div style="margin: 20px 0;">
+                <p><strong>Server:</strong> <span id="current-server">--</span></p>
+                <button class="btn btn-primary" onclick="showPage('setup')">Change Server</button>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <h4 style="margin-bottom: 10px;">Auto-Refresh</h4>
+                <label style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="auto-refresh" checked style="width: auto;">
+                    <span>Refresh every 5 seconds</span>
+                </label>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <button class="btn btn-success" onclick="testConnection()">🧪 Test Connection</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Refresh Button -->
+    <button class="refresh-btn" onclick="refreshData()">🔄</button>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="showPage('dashboard')">
+            <span>📊</span>
+            <small>Dashboard</small>
+        </div>
+        <div class="nav-item" onclick="showPage('devices')">
+            <span>🖥️</span>
+            <small>Devices</small>
+        </div>
+        <div class="nav-item" onclick="showPage('alerts')">
+            <span>🔔</span>
+            <small>Alerts</small>
+        </div>
+        <div class="nav-item" onclick="showPage('settings')">
+            <span>⚙️</span>
+            <small>Settings</small>
+        </div>
+    </div>
+
+    <script>
+        let serverURL = localStorage.getItem('serverURL') || '';
+        let currentUPS = 'default';
+        let refreshInterval = null;
+
+        // Check if already connected
+        if (serverURL) {
+            document.getElementById('server-url').value = serverURL;
+            connectToServer();
+        }
+
+        async function connectToServer() {
+            const url = document.getElementById('server-url').value.trim();
+            
+            if (!url) {
+                showMessage('connection-status', 'Please enter server address', 'error');
+                return;
+            }
+
+            showMessage('connection-status', 'Connecting...', 'info');
+
+            try {
+                const response = await fetch(`${url}/api/health`);
+                const data = await response.json();
+
+                if (data.status === 'OK') {
+                    serverURL = url;
+                    localStorage.setItem('serverURL', url);
+                    showMessage('connection-status', '✅ Connected successfully!', 'success');
+                    
+                    setTimeout(() => {
+                        showPage('dashboard');
+                        startAutoRefresh();
+                    }, 1000);
+                } else {
+                    throw new Error('Invalid response');
+                }
+            } catch (error) {
+                showMessage('connection-status', '❌ Connection failed. Check server address and try again.', 'error');
+            }
+        }
+
+        async function refreshData() {
+            if (!serverURL) return;
+
+            try {
+                // Update status
+                document.getElementById('server-status').textContent = 'Connected to ' + serverURL;
+
+                // Fetch UPS status
+                const statusResponse = await fetch(`${serverURL}/api/ups/status?upsId=${currentUPS}`);
+                const status = await statusResponse.json();
+
+                // Update dashboard
+                document.getElementById('status-badge').textContent = status.powerStatus.toUpperCase();
+                document.getElementById('status-badge').className = 'status-badge status-' + status.powerStatus;
+                
+                document.getElementById('battery').textContent = Math.round(status.batteryLevel) + '%';
+                document.getElementById('voltage').textContent = Math.round(status.inputVoltage) + 'V';
+                document.getElementById('load').textContent = Math.round(status.load) + '%';
+                document.getElementById('temp').textContent = Math.round(status.temperature) + '°C';
+                
+                document.getElementById('ups-name').textContent = status.name;
+                document.getElementById('ups-location').textContent = status.location;
+                document.getElementById('runtime').textContent = status.runtime;
+                
+                document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
+
+                // Fetch devices
+                const devicesResponse = await fetch(`${serverURL}/api/ups/devices`);
+                const devicesData = await devicesResponse.json();
+                
+                const devicesList = document.getElementById('ups-list');
+                devicesList.innerHTML = devicesData.devices.map(ups => `
+                    <div class="ups-item" onclick="selectUPS('${ups.id}')">
+                        <h3>${ups.name}</h3>
+                        <p>📍 ${ups.location} | 🔋 ${Math.round(ups.batteryLevel)}%</p>
+                        <p style="font-size: 0.8rem; color: ${ups.powerStatus === 'online' ? '#4CAF50' : '#FF9800'};">
+                            ${ups.powerStatus === 'online' ? '✅ Online' : '⚠️ On Battery'}
+                        </p>
+                    </div>
+                `).join('');
+
+                // Fetch alerts
+                const alertsResponse = await fetch(`${serverURL}/api/alerts?limit=10`);
+                const alertsData = await alertsResponse.json();
+                
+                const alertsContainer = document.getElementById('alerts-container');
+                if (alertsData.alerts.length === 0) {
+                    alertsContainer.innerHTML = '<div class="loading">No alerts</div>';
+                } else {
+                    alertsContainer.innerHTML = alertsData.alerts.map(alert => `
+                        <div class="alert alert-${alert.severity}">
+                            <h4 style="margin-bottom: 5px;">${alert.title}</h4>
+                            <p style="font-size: 0.9rem; color: #666;">${alert.message}</p>
+                            <p style="font-size: 0.8rem; color: #999; margin-top: 5px;">
+                                ${new Date(alert.timestamp).toLocaleString()}
+                            </p>
+                        </div>
+                    `).join('');
+                }
+
+                // Update settings
+                document.getElementById('current-server').textContent = serverURL;
+
+            } catch (error) {
+                console.error('Refresh failed:', error);
+                document.getElementById('server-status').textContent = 'Connection lost';
+            }
+        }
+
+        function selectUPS(upsId) {
+            currentUPS = upsId;
+            showPage('dashboard');
+            refreshData();
+        }
+
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            // Show selected page
+            document.getElementById(pageName + '-page').classList.add('active');
+            
+            // Update nav
+            const navItems = document.querySelectorAll('.nav-item');
+            const pageIndex = { dashboard: 0, devices: 1, alerts: 2, settings: 3 };
+            if (pageIndex[pageName] !== undefined) {
+                navItems[pageIndex[pageName]].classList.add('active');
+            }
+
+            // Refresh data when showing dashboard
+            if (pageName === 'dashboard' || pageName === 'devices' || pageName === 'alerts') {
+                refreshData();
+            }
+        }
+
+        function startAutoRefresh() {
+            if (refreshInterval) clearInterval(refreshInterval);
+            
+            refreshData();
+            
+            if (document.getElementById('auto-refresh').checked) {
+                refreshInterval = setInterval(refreshData, 5000);
+            }
+        }
+
+        function testConnection() {
+            refreshData();
+            alert('Connection test completed! Check the data above.');
+        }
+
+        function showMessage(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${type}-msg">${message}</div>`;
+        }
+
+        // Auto-refresh toggle
+        document.getElementById('auto-refresh').addEventListener('change', function() {
+            if (this.checked) {
+                startAutoRefresh();
+            } else {
+                if (refreshInterval) clearInterval(refreshInterval);
+            }
+        });
+    </script>
+</body>
+</html>

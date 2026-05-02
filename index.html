@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPS Monitor Pro - Professional UPS Monitoring System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            margin: 10px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 30px;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .download-section {
+            background: #f8f9fa;
+            padding: 80px 20px;
+        }
+
+        .download-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .download-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .download-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .download-card h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .download-card .version {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .pricing {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+
+        .pricing-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .pricing-card:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured {
+            border-color: #667eea;
+            position: relative;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured::before {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #667eea;
+            color: white;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .price-period {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .features-list {
+            list-style: none;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .features-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .features-list li::before {
+            content: '✓';
+            color: #4CAF50;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .setup-steps {
+            background: white;
+            padding: 80px 20px;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .btn {
+                display: block;
+                margin: 10px auto;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>⚡ UPS Monitor Pro</h1>
+        <p>Professional UPS Monitoring with Email & Phone Call Alerts</p>
+        <a href="#download" class="btn btn-primary">📥 Download Now</a>
+        <a href="#pricing" class="btn btn-secondary">💰 See Pricing</a>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 20px;">Why Choose UPS Monitor Pro?</h2>
+        <p style="text-align: center; color: #666; font-size: 1.2rem; margin-bottom: 40px;">
+            Enterprise-grade UPS monitoring for businesses of all sizes
+        </p>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📧</div>
+                <h3>Email Alerts</h3>
+                <p>Instant email notifications when power fails, battery is low, or temperature is high</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">📞</div>
+                <h3>Phone Call Alerts</h3>
+                <p>Automatic phone calls to your PBX extension during critical events</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h3>Real-time Dashboard</h3>
+                <p>Monitor all your UPS devices from a beautiful web interface</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">📱</div>
+                <h3>Mobile Access</h3>
+                <p>Access your dashboard from any smartphone or tablet</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🖥️</div>
+                <h3>Multi-Device Support</h3>
+                <p>Monitor unlimited UPS units from one central location</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <h3>Secure & Reliable</h3>
+                <p>Enterprise-grade security with 99.9% uptime guarantee</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download Section -->
+    <div class="download-section" id="download">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 20px;">Download UPS Monitor Pro</h2>
+            <p style="text-align: center; color: #666; font-size: 1.2rem;">
+                Available for Windows, Mac, and Linux
+            </p>
+
+            <div class="download-cards">
+                <div class="download-card">
+                    <h3>🪟 Windows</h3>
+                    <p class="version">Version 1.0.0 | 25 MB</p>
+                    <p style="margin-bottom: 20px;">Windows 10/11 (64-bit)</p>
+                    <a href="downloads/ups-monitor-windows.zip" class="btn btn-primary" download>Download for Windows</a>
+                </div>
+
+                <div class="download-card">
+                    <h3>🐧 Linux</h3>
+                    <p class="version">Version 1.0.0 | 20 MB</p>
+                    <p style="margin-bottom: 20px;">Ubuntu, Debian, CentOS</p>
+                    <a href="downloads/ups-monitor-linux.tar.gz" class="btn btn-primary" download>Download for Linux</a>
+                </div>
+
+                <div class="download-card">
+                    <h3>📱 Mobile App</h3>
+                    <p class="version">Coming Soon</p>
+                    <p style="margin-bottom: 20px;">iOS & Android</p>
+                    <a href="#" class="btn btn-secondary" style="background: #ccc; cursor: not-allowed;">Coming Soon</a>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px; padding: 30px; background: white; border-radius: 10px;">
+                <h3 style="margin-bottom: 20px;">📋 System Requirements</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: left;">
+                    <div>
+                        <strong>Operating System:</strong>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>Windows 10/11</li>
+                            <li>Ubuntu 20.04+</li>
+                            <li>Debian 11+</li>
+                            <li>CentOS 8+</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <strong>Hardware:</strong>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>2GB RAM minimum</li>
+                            <li>500MB disk space</li>
+                            <li>Network connection</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <strong>Software:</strong>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>Node.js 18+ (included)</li>
+                            <li>Modern web browser</li>
+                            <li>Email account (Gmail/SMTP)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Setup Steps -->
+    <div class="setup-steps">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 20px;">Quick Setup in 5 Minutes</h2>
+            <p style="text-align: center; color: #666; font-size: 1.2rem; margin-bottom: 40px;">
+                Get up and running in just a few simple steps
+            </p>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Download</h3>
+                    <p>Download the installer for your operating system</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Install</h3>
+                    <p>Run the installer and follow the simple wizard</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Configure</h3>
+                    <p>Enter your email and PBX settings</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Monitor</h3>
+                    <p>Access your dashboard and start monitoring!</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 60px;">
+                <a href="docs/installation-guide.pdf" class="btn btn-primary">📖 View Installation Guide</a>
+                <a href="docs/user-manual.pdf" class="btn btn-secondary">📚 User Manual</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div class="pricing" id="pricing">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Simple, Transparent Pricing</h2>
+            <p style="color: #666; font-size: 1.2rem; margin-bottom: 40px;">
+                Choose the plan that fits your needs
+            </p>
+
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <h3>Free</h3>
+                    <div class="price">$0<span class="price-period">/month</span></div>
+                    <p style="color: #666; margin-bottom: 30px;">For personal use</p>
+                    <ul class="features-list">
+                        <li>1 UPS device</li>
+                        <li>Email alerts</li>
+                        <li>Web dashboard</li>
+                        <li>Community support</li>
+                        <li>Basic monitoring</li>
+                    </ul>
+                    <a href="#download" class="btn btn-secondary">Get Started Free</a>
+                </div>
+
+                <div class="pricing-card featured">
+                    <h3>Professional</h3>
+                    <div class="price">$29<span class="price-period">/month</span></div>
+                    <p style="color: #666; margin-bottom: 30px;">For small businesses</p>
+                    <ul class="features-list">
+                        <li>Unlimited UPS devices</li>
+                        <li>Email + Phone alerts</li>
+                        <li>PBX integration</li>
+                        <li>Mobile app access</li>
+                        <li>Priority support</li>
+                        <li>Advanced analytics</li>
+                    </ul>
+                    <a href="#download" class="btn btn-primary">Start Free Trial</a>
+                </div>
+
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <div class="price">$99<span class="price-period">/month</span></div>
+                    <p style="color: #666; margin-bottom: 30px;">For large organizations</p>
+                    <ul class="features-list">
+                        <li>Everything in Professional</li>
+                        <li>Multi-location support</li>
+                        <li>Custom integrations</li>
+                        <li>Dedicated account manager</li>
+                        <li>24/7 phone support</li>
+                        <li>SLA guarantee</li>
+                        <li>On-site installation</li>
+                    </ul>
+                    <a href="mailto:sales@upsmonitor.com" class="btn btn-primary">Contact Sales</a>
+                </div>
+            </div>
+
+            <p style="margin-top: 40px; color: #666;">
+                All plans include 14-day free trial. No credit card required.
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="container">
+            <h3 style="margin-bottom: 20px;">UPS Monitor Pro</h3>
+            <p style="margin-bottom: 20px;">Professional UPS Monitoring for Modern Businesses</p>
+            
+            <div style="margin: 30px 0;">
+                <a href="mailto:support@upsmonitor.com" style="margin: 0 15px;">📧 support@upsmonitor.com</a>
+                <a href="tel:+1234567890" style="margin: 0 15px;">📞 +1 (234) 567-890</a>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <a href="docs.html" style="margin: 0 15px;">Documentation</a>
+                <a href="support.html" style="margin: 0 15px;">Support</a>
+                <a href="api.html" style="margin: 0 15px;">API</a>
+                <a href="privacy.html" style="margin: 0 15px;">Privacy</a>
+                <a href="terms.html" style="margin: 0 15px;">Terms</a>
+            </div>
+
+            <p style="margin-top: 30px; color: #aaa;">
+                © 2026 UPS Monitor Pro. All rights reserved.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Track downloads
+        document.querySelectorAll('a[download]').forEach(link => {
+            link.addEventListener('click', function() {
+                console.log('Download started:', this.getAttribute('href'));
+                // Add analytics tracking here
+            });
+        });
+    </script>
+</body>
+</html>
